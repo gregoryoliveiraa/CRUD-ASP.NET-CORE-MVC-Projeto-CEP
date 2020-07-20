@@ -1,0 +1,180 @@
+﻿@model e.mix.repository.Models.Cep
+
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        function limpa_formulário_cep() {
+
+            $("#Logradouro").val("");
+            $("#Complemento").val("");
+            $("#Bairro").val("");
+            $("#Localidade").val("");
+            $("#Uf").val("");
+            $("#Unidade").val("");
+            $("#Ibge").val("");
+            $("#Gia").val("");
+
+
+        }
+
+        $("#Cep").blur(function () {
+            var cep = $(this).val().replace(/\D/g, '');
+            if (cep != "") {
+
+                var validacep = /^[0-9]{8}$/;
+                if (validacep.test(cep)) {
+
+                    $("#Logradouro").val("...");
+                    $("#Complemento").val("...");
+                    $("#Bairro").val("...");
+                    $("#Localidade").val("...");
+                    $("#Uf").val("...");
+                    $("#Unidade").val("...");
+                    $("#Ibge").val("...");
+                    $("#Gia").val("...");
+
+                    $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function (dados) {
+
+                        if (!("erro" in dados)) {
+
+                            $("#Logradouro").val(dados.logradouro);
+                            $("#Bairro").val(dados.bairro);
+                            $("#Localidade").val(dados.localidade);
+                            $("#Uf").val(dados.uf);
+                            $("#Unidade").val(dados.unidade);
+                            $("#Ibge").val(dados.ibge);
+                            $("#Gia").val(dados.gia);
+
+
+                        }
+                        else {
+
+                            limpa_formulário_cep();
+                            alert("CEP não encontrado.");
+                        }
+                    });
+                }
+                else {
+
+                    limpa_formulário_cep();
+                    alert("Formato de CEP inválido.");
+                }
+            }
+            else {
+
+                limpa_formulário_cep();
+            }
+        });
+    });
+
+</script>
+
+
+<!--
+    Acessando utilizando o controller
+
+        $("#Cep1").on("change", function () {
+            $.ajax({
+                type: "get",
+                url: '@Url.Action("GetCep", "CepController")',
+                data: {
+                    cep: $("#Cep1").val()
+                },
+                success: function (result) {
+                    $("#Logradouro").val(result.Logradouro);
+                    $("#Bairro").val(result.Bairro);
+                    $("#Localidade").val(result.Localidade);
+                    $("#Uf").val(result.Uf);
+                    $("#Unidade").val(result.Unidade);
+                    $("#Ibge").val(result.Ibge);
+                    $("#Gia").val(result.Gia);
+                }
+            })
+        })
+
+
+     -->
+
+
+<h1>Inserir</h1>
+
+<h4>Cep</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Cep1" class="control-label"></label>
+                <input asp-for="Cep1" id="Cep" id="Cep" size="10" class="form-control" />
+                <span asp-validation-for="Cep1" class="text-danger"></span>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Logradouro" class="control-label"></label>
+                <input asp-for="Logradouro" id="Logradouro" class="form-control" />
+                <span asp-validation-for="Logradouro" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Complemento" class="control-label"></label>
+                <input asp-for="Complemento" id="Complemento" class="form-control" />
+                <span asp-validation-for="Complemento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bairro" class="control-label"></label>
+                <input asp-for="Bairro" id="Bairro" class="form-control" />
+                <span asp-validation-for="Bairro" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Localidade" class="control-label"></label>
+                <input asp-for="Localidade" id="Localidade" class="form-control" />
+                <span asp-validation-for="Localidade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Uf" class="control-label"></label>
+                <input asp-for="Uf" id="Uf" class="form-control" />
+                <span asp-validation-for="Uf" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Unidade" class="control-label"></label>
+                <input asp-for="Unidade" id="Unidade" class="form-control" />
+                <span asp-validation-for="Unidade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ibge" class="control-label"></label>
+                <input asp-for="Ibge" id="Ibge" class="form-control" />
+                <span asp-validation-for="Ibge" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gia" class="control-label"></label>
+                <input asp-for="Gia" id="Gia" class="form-control" />
+                <span asp-validation-for="Gia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Cadastrar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Voltar para lista</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
